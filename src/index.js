@@ -6,7 +6,8 @@ app.use(express.urlencoded());
 let studentArray = require("./InitialData");
 require("./mongoose/config");
 const Product = require("./mongoose/product");
-
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
 
 
 // let insertArray = async () => {
@@ -32,7 +33,7 @@ app.get("/api/student", async (req, res) => {
 //get by id
 app.get("/api/student/:id", async (req, res) => {
   try {
-    res.setHeader('Content-Type', 'application/x-www-form-urlencoded')
+    // res.setHeader('Content-Type', 'application/x-www-form-urlencoded')
     let data = await Product.find({id:req.params.id})
     res.send(data);
   } catch (e) {
@@ -47,10 +48,11 @@ app.get("/api/student/:id", async (req, res) => {
 app.use(express.json());
 app.post("/api/student", async (req, res) => {
   try {
-    res.setHeader('Content-Type', 'application/x-www-form-urlencoded')
-    let data = new Product(req.body);
-    const result = await data.save();
-    res.send(result);
+    // res.setHeader('Content-Type', 'application/x-www-form-urlencoded')
+    // let data = new Product(req.body);
+    // const result = await data.save();
+    let data = await Product.create(req.body)
+    res.send(data);
   } catch (e) {
     res.status(400).json({
       status: "Failed",
@@ -78,7 +80,7 @@ app.put("/api/student/:id", async (req, res) => {
 //delete
 app.delete("/api/student/:id", async (req, res) => {
   try {
-    let data = await Product.findOneAndDelete(req.params);
+    let data = await Product.findOneAndDelete(req.params.id);
     res.send(data);
   } catch (e) {
     res.status(404).json({
@@ -91,3 +93,4 @@ app.delete("/api/student/:id", async (req, res) => {
 app.listen(port, () => console.log(`App listening on port ${port}!`));
 
 module.exports = app;
+
